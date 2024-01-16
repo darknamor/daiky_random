@@ -10,6 +10,8 @@
     <!-- Otros scripts -->
   </head>
   <body>
+    <img src="logo.png" alt="Logo" style="position: absolute; top: 0; left: 0; max-width: 100px; max-height: 100px; margin: 10px" />
+
     <div class="container mt-5">
       <table class="table" id="miTabla">
         <thead>
@@ -81,7 +83,15 @@
 
         // Asignar valores aleatorios del 1 al 12 a cada dado sin repetir
         asignarValoresDadoAleatorio('dado1[]', 'dado2[]');
-
+        // Mostrar SweetAlert con un gif
+        Swal.fire({
+          title: 'Dados lanzados',
+          imageUrl: 'rats.gif', // Reemplaza 'ruta_a_tu_gif.gif' con la ruta correcta a tu gif
+          imageAlt: 'Dados lanzados',
+          showCancelButton: false,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a745', // Color verde de Bootstrap
+        });
         // Mostrar valores
         mostrarValores();
       }
