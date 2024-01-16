@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <title>Tabla con Inputs</title>
+    <!-- Otros enlaces -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Otros scripts -->
+  </head>
+  <body>
+    <div class="container mt-5">
+      <table class="table" id="miTabla">
+        <thead>
+          <tr>
+            <th>Jugador 1</th>
+            <th>Dado 1</th>
+            <th>Jugador 2</th>
+            <th>Dado 2</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- La primera fila -->
+          <tr>
+            <td><input type="text" class="form-control columna" name="columna1[]" required /></td>
+            <td><input type="text" class="form-control dado" name="dado1[]" value="0" readonly /></td>
+            <td><input type="text" class="form-control columna" name="columna2[]" required /></td>
+            <td><input type="text" class="form-control dado" name="dado2[]" value="0" readonly /></td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">-</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button type="button" class="btn btn-success" onclick="agregarFila()">+ Agregar Fila</button>
+      <button type="button" class="btn btn-info" onclick="validarYMostrar()">Tirar dados</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+      function agregarFila() {
+        var fila =
+          '<tr>' +
+          '<td><input type="text" class="form-control columna" name="columna1[]" required></td>' +
+          '<td><input type="text" class="form-control dado" name="dado1[]" value="0" readonly></td>' +
+          '<td><input type="text" class="form-control columna" name="columna2[]" required></td>' +
+          '<td><input type="text" class="form-control dado" name="dado2[]" value="0" readonly></td>' +
+          '<td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">-</button></td>' +
+          '</tr>';
+        $('#miTabla tbody').append(fila);
+      }
+
+      function eliminarFila(btn) {
+        $(btn).closest('tr').remove();
+      }
+
+      function validarYMostrar() {
+        // Validar que los inputs de columna no estén vacíos
+        var valid = true;
+        $('.columna').each(function () {
+          if (!$(this).val()) {
+            valid = false;
+            return false; // Salir del bucle si encuentra un input de columna vacío
+          }
+        });
+
+        if (!valid) {
+          // Mostrar mensaje de alerta con SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Debes rellenar todos los campos de columna',
+          });
+          return;
+        }
+
+        // Asignar valores aleatorios del 1 al 12 a cada dado sin repetir
+        asignarValoresDadoAleatorio('dado1[]', 'dado2[]');
+
+        // Mostrar valores
+        mostrarValores();
+      }
+
+      function asignarValoresDadoAleatorio(nombreDado1, nombreDado2) {
+        var filas = $('#miTabla tbody tr');
+        filas.each(function () {
+          var valorAleatorio1, valorAleatorio2;
+          do {
+            valorAleatorio1 = Math.floor(Math.random() * 12) + 1;
+            valorAleatorio2 = Math.floor(Math.random() * 12) + 1;
+          } while (valorAleatorio1 === valorAleatorio2);
+
+          $(this)
+            .find('input[name="' + nombreDado1 + '"]')
+            .val(valorAleatorio1);
+          $(this)
+            .find('input[name="' + nombreDado2 + '"]')
+            .val(valorAleatorio2);
+        });
+      }
+
+      function mostrarValores() {
+        var valores = [];
+        $('#miTabla tbody tr').each(function () {
+          var columna1 = $(this).find('input[name="columna1[]"]').val();
+          var dado1 = $(this).find('input[name="dado1[]"]').val();
+          var columna2 = $(this).find('input[name="columna2[]"]').val();
+          var dado2 = $(this).find('input[name="dado2[]"]').val();
+          valores.push({ columna1: columna1, dado1: dado1, columna2: columna2, dado2: dado2 });
+        });
+
+        console.log(valores);
+      }
+    </script>
+  </body>
+</html>
